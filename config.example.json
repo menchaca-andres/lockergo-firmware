@@ -1,0 +1,32 @@
+{
+  "apiUrl": "http://192.168.1.50:4000",
+  "deviceCode": "esp32-locker-01",
+  "firmwareVersion": "0.1.0",
+  "wifi": {
+    "ssid": "UCB",
+    "password": ""
+  },
+  "componentReporting": {
+    "door": {
+      "heartbeatS": 300,
+      "captureOn": []
+    },
+    "obstacle": {
+      "heartbeatS": 300
+    },
+    "distance": {
+      "deadband": 2,
+      "heartbeatS": 60,
+      "settleS": 2,
+      "maxDistanceCm": 25,
+      "captureOn": [
+        {
+          "component": "door",
+          "value": true,
+          "delayS": 2,
+          "purpose": "DOOR_CLOSE"
+        }
+      ]
+    }
+  }
+}
