@@ -1,9 +1,11 @@
+import gc
 import json
 
 
 def _request(method, url, api_key, body=None):
     import urequests
 
+    gc.collect()
     headers = {}
     if api_key:
         headers["x-device-key"] = api_key
@@ -15,10 +17,12 @@ def _request(method, url, api_key, body=None):
         if method == "GET":
             response = urequests.get(url, headers=headers)
         else:
+            payload_text = json.dumps(body)
+            gc.collect()
             response = urequests.post(
                 url,
                 headers=headers,
-                data=json.dumps(body),
+                data=payload_text,
             )
         if response.status_code < 200 or response.status_code >= 300:
             raise OSError("HTTP " + str(response.status_code))
@@ -26,6 +30,7 @@ def _request(method, url, api_key, body=None):
     finally:
         if response is not None:
             response.close()
+        gc.collect()
 
 
 def fetch_config(api_url, device_code, api_key=None):

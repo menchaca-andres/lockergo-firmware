@@ -66,6 +66,23 @@ class ReporterTests(unittest.TestCase):
             reading, _changed = reporter.observe(10, "OK", tick * 1000)
         self.assertEqual(reading["quality"], "OK")
 
+    def test_string_requires_confirmation_before_emitting(self):
+        reporter = Reporter("STRING", {"confirmCount": 2, "heartbeatS": 60})
+        first, changed = reporter.observe("azul", "OK", 0)
+        self.assertIsNone(first)
+        self.assertFalse(changed)
+
+        second, changed = reporter.observe("azul", "OK", 1000)
+        self.assertEqual(second["value"], "azul")
+        self.assertFalse(changed)
+
+        noise, changed = reporter.observe("naranja", "OK", 2000)
+        self.assertIsNone(noise)
+
+        confirmed, changed = reporter.observe("naranja", "OK", 3000)
+        self.assertEqual(confirmed["value"], "naranja")
+        self.assertTrue(changed)
+
 
 if __name__ == "__main__":
     unittest.main()

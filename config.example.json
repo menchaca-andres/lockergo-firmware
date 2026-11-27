@@ -1,10 +1,10 @@
 {
-  "apiUrl": "http://192.168.1.50:4000",
+  "apiUrl": "http://192.168.1.4:4000",
   "deviceCode": "esp32-locker-01",
   "firmwareVersion": "0.1.0",
   "wifi": {
-    "ssid": "UCB",
-    "password": ""
+    "ssid": "4mrvro",
+    "password": "amen03$$"
   },
   "componentReporting": {
     "door": {
@@ -27,6 +27,35 @@
           "purpose": "DOOR_CLOSE"
         }
       ]
+    },
+    "vibration": {
+      "heartbeatS": 300
+    },
+    "color": {
+      "heartbeatS": 300,
+      "confirmCount": 2
     }
+  },
+  "kiosk": {
+    "enabled": true,
+    "relayPin": 22,
+    "relayActiveLow": true,
+    "buzzerPin": 21,
+    "doorPin": 33,
+    "tftSckPin": 18,
+    "tftMosiPin": 23,
+    "tftCsPin": 5,
+    "tftDcPin": 26,
+    "tftRstPin": 32,
+    "tftRotation": 3,
+    "touchSckPin": 14,
+    "touchMosiPin": 13,
+    "touchMisoPin": 34,
+    "touchCsPin": 2,
+    "touchIrqPin": 35,
+    "tyLeft": 304,
+    "tyRight": 11,
+    "txTop": 218,
+    "txBottom": 22
   }
 }

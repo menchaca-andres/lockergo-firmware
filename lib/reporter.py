@@ -24,14 +24,40 @@ class Reporter:
         self.last_report_ms = None
         self.candidate = None
         self.candidate_since_ms = None
+        self.confirm_count = max(1, int(config.get("confirmCount", 2 if value_kind == "STRING" else 1)))
+        self._pending_string = None
+        self._pending_string_hits = 0
 
     def observe(self, value, quality, now_ms):
         if quality == "ERROR" or value is None:
             self.candidate = None
             self.candidate_since_ms = None
+            self._pending_string = None
+            self._pending_string_hits = 0
             self.last_quality = "ERROR"
             self.last_report_ms = now_ms
             return self._reading(None, "ERROR", now_ms), False
+
+        if self.value_kind == "STRING":
+            text = str(value)
+            if text == self._pending_string:
+                self._pending_string_hits += 1
+            else:
+                self._pending_string = text
+                self._pending_string_hits = 1
+
+            changed = self.last_value is not None and text != self.last_value
+            confirmed = self._pending_string_hits >= self.confirm_count
+            if (
+                (self.last_value is None and confirmed) or
+                (changed and confirmed) or
+                (text == self.last_value and (quality != self.last_quality or self._heartbeat_due(now_ms)))
+            ):
+                self.last_value = text
+                self.last_quality = quality
+                self.last_report_ms = now_ms
+                return self._reading(text, quality, now_ms), changed
+            return None, False
 
         if self.value_kind == "BOOLEAN":
             changed = self.last_value is not None and value is not self.last_value
